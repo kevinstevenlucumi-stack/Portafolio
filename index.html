@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ink and Key | Portafolio Profesional</title>
+    <style>
+        /* --- 1. VARIABLES Y RESET (MODO OSCURO) --- */
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-card: rgba(30, 30, 30, 0.85);
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --accent: #00d4ff; /* Azul neón suave para resaltar */
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+
+        /* --- 2. FONDO ANIMADO Y PARTICULAS --- */
+        #bg-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+            background-color: #050505; 
+            background-image: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+        }
+        
+        #star-field {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: floatParticle var(--duration) linear infinite;
+        }
+
+        @keyframes floatParticle {
+            from { transform: translateY(0px); opacity: 0; }
+            50% { opacity: 0.8; }
+            to { transform: translateY(-100vh); opacity: 0; }
+        }
+
+        /* --- 3. NAVEGACIÓN Y LOGO --- */
+        header {
+            position: fixed;
+            top: 0; width: 100%;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 0.8rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* LOGO AUMENTADO DE TAMAÑO */
+        .logo-img {
+            width: 65px; /* Antes 50px */
+            height: 65px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+            background: url('Gemini_Generated_Image_nvujcdnvujcdnvuj (1).jpg.jpeg') center/cover;
+            cursor: zoom-in; /* Indica que se puede ampliar */
+            transition: transform 0.3s ease;
+        }
+        
+        .logo-img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+
+        /* TEXTO CLICKABLE PARA IR A INICIO */
+        .logo-text-group {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            cursor: pointer; /* Mano para indicar clic */
+        }
+
+        .logo-title { 
+            font-weight: 700; 
+            font-size: 1.2rem; 
+            letter-spacing: 1px;
+            color: var(--text-primary);
+        }
+
+        .logo-slogan-mini {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+            display: none; 
+            transition: color 0.3s;
+        }
+        
+        .logo-text-group:hover .logo-slogan-mini {
+            color: var(--accent);
+        }
+        
+        @media (min-width: 768px) {
+            .logo-slogan-mini { display: block; }
+        }
+
+        nav ul { display: flex; list-style: none; gap: 30px; }
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        nav a:hover, nav a.active { color: var(--accent); }
+
+        /* --- 4. LAYOUT PRINCIPAL (SPA) --- */
+        main {
+            padding-top: 110px; 
+            padding-bottom: 50px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 80vh;
+        }
+
+        .view-section {
+            display: none; 
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        .view-section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 5. VISTA HOME --- */
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .hero h1 { 
+            font-size: 3.5rem; 
+            margin-bottom: 10px; 
+            line-height: 1.1; 
+            background: -webkit-linear-gradient(45deg, #fff, #b3b3b3);
+            -webkit-background-clip: text;
+            -webkit-background-clip: text; /* Para Chrome y Safari */
+            background-clip: text;         /* <--- AGREGA ESTA LÍNEA PARA QUITAR EL ERROR */
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-slogan {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 30px;
+            font-weight: 300;
+            font-style: italic;
+        }
+        .hero p { 
+            font-size: 1.1rem; 
+            color: var(--text-secondary); 
+            margin-bottom: 40px; 
+            line-height: 1.6;
+        }
+        .btn {
+            padding: 15px 40px;
+            background: var(--accent);
+            color: #000;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: var(--transition);
+            cursor: pointer;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2);
+        }
+        .btn:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.5); 
+            color: #fff;
+        }
+
+        /* --- 6. VISTA BLOG (Publicaciones) --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .article-card {
+            background: var(--bg-card);
+            padding: 35px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .article-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .article-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+        }
+        .article-card:hover::before { transform: scaleX(1); }
+
+        .article-card h3 { font-size: 1.4rem; margin-bottom: 15px; line-height: 1.3; }
+        .article-card p { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 25px; flex-grow: 1; }
+        .read-more { color: var(--accent); font-size: 0.9rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+
+        /* --- 7. VISTA ARTÍCULO INDIVIDUAL --- */
+        .single-article {
+            background: var(--bg-card);
+            padding: 50px;
+            border-radius: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .back-btn {
+            background: transparent; border: 1px solid var(--text-secondary);
+            color: var(--text-secondary); padding: 8px 20px; border-radius: 30px;
+            cursor: pointer; margin-bottom: 30px; transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        .back-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(0, 212, 255, 0.05); }
+        
+        .article-content h1 { font-size: 2.2rem; margin-bottom: 10px; color: var(--text-primary); }
+        .article-meta { font-size: 0.9rem; color: var(--accent); margin-bottom: 30px; display: block; }
+        
+        .article-body { font-size: 1.05rem; line-height: 1.9; color: #e0e0e0; }
+        .article-body h2 { color: var(--accent); margin-top: 40px; margin-bottom: 15px; font-size: 1.5rem; }
+        .article-body p { margin-bottom: 20px; text-align: justify; }
+        .article-body ul { margin-bottom: 20px; padding-left: 20px; color: var(--text-secondary); }
+        .article-body li { margin-bottom: 10px; }
+        .article-body strong { color: #fff; }
+
+        /* --- 8. MODAL PARA LOGO --- */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 2000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.9); 
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s;
+        }
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 80%;
+            max-height: 80%;
+            border: 3px solid var(--accent);
+            border-radius: 50%; /* Opcional: si quieres que siga siendo redondo en grande */
+            box-shadow: 0 0 50px rgba(0, 212, 255, 0.5);
+        }
+        .close-modal {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .close-modal:hover,
+        .close-modal:focus {
+            color: var(--accent);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .hero-slogan { font-size: 1.2rem; }
+            nav ul { gap: 15px; font-size: 0.85rem; }
+            .single-article { padding: 25px; }
+            .logo-text-group { display: none; } /* En móvil solo mostramos el logo icon */
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-container"></div>
+    <div id="star-field"></div>
+
+    <div id="logo-modal" class="modal" onclick="closeModal()">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="img-expanded" src="Gemini_Generated_Image_nvujcdnvujcdnvuj (1).jpg.jpeg">
+    </div>
+
+    <header>
+        <div class="logo-container">
+            <div class="logo-img" id="nav-logo" onclick="openModal()"></div> 
+            
+            <div class="logo-text-group" onclick="navigate('home')">
+                <div class="logo-title">Ink and Key</div>
+                <div class="logo-slogan-mini">Tradición Escrita. Precisión Digital</div>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a onclick="navigate('home')" id="link-home" class="active">Inicio</a></li>
+                <li><a onclick="navigate('blog')" id="link-blog">Portafolio</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home-view" class="view-section active">
+            <div class="hero">
+                <h1>Ink and Key</h1>
+                <div class="hero-slogan">Tradición Escrita. Precisión Digital</div>
+                <p>Unimos la artesanía del lenguaje con buenas prácticas de desarrollo para crear historias que perduren, convenzan e impacten..</p>
+                <a onclick="navigate('blog')" class="btn">Explorar Contenido</a>
+            </div>
+        </section>
+
+        <section id="blog-view" class="view-section">
+            <h2 style="text-align: center; margin-bottom: 10px; font-size: 2rem;">Publicaciones Destacadas</h2>
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 30px;">Análisis profundos sobre tecnología, productividad y gestión humana.</p>
+            <div class="grid-container" id="articles-grid">
+                </div>
+        </section>
+
+        <section id="article-view" class="view-section">
+            <button class="back-btn" onclick="navigate('blog')">← Volver al portafolio</button>
+            <div class="single-article">
+                <div id="article-content-wrapper" class="article-content">
+                    </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // --- 1. BASE DE DATOS DE ARTÍCULOS ---
+        const articlesData = [
+            {
+                id: 1,
+                title: "Productividad Profesional en Entornos de Trabajo Remoto",
+                excerpt: "El trabajo remoto ofrece flexibilidad pero exige disciplina. Descubre cómo estructurar tu entorno para maximizar el rendimiento.",
+                readTime: "5 min lectura",
+                content: `
+                    <h1>Productividad Profesional en Entornos de Trabajo Remoto</h1>
+                    <span class="article-meta">Categoría: Gestión & Eficiencia</span>
+                    <div class="article-body">
+                        <p>El trabajo remoto se ha consolidado como una modalidad laboral predominante en múltiples sectores. Ofrece ventajas claras como flexibilidad horaria y ahorro de tiempo en desplazamientos, pero plantea retos importantes en términos de organización, atención y bienestar mental.</p>
+                        
+                        <h2>Entender el contexto del trabajo remoto</h2>
+                        <p>El entorno doméstico introduce variables que no existen en una oficina tradicional: interrupciones del hogar, falta de límites físicos claros entre ocio y trabajo, y la absoluta necesidad de autogestión. Comprender este contexto es el primer paso para diseñar prácticas que sostengan la productividad a largo plazo sin caer en el agotamiento.</p>
+                        <p><strong>Ejemplo práctico:</strong> Un profesional que comparte espacio con su familia puede establecer señales visuales (como una puerta cerrada o unos auriculares puestos) y horarios estrictos para minimizar las interrupciones externas.</p>
+
+                        <h2>Metodologías prácticas para mantener la atención</h2>
+                        <p>La atención es el recurso más escaso en la economía digital. Existen técnicas sencillas que ayudan a mantener la concentración:</p>
+                        <ul>
+                            <li><strong>Bloques de tiempo (Time Boxing):</strong> Fragmentar tareas en bloques manejables de 45 a 90 minutos.</li>
+                            <li><strong>Definición de objetivos:</strong> Antes de abrir el correo, definir los 3 objetivos clave del día.</li>
+                            <li><strong>Matriz de Impacto:</strong> Priorizar tareas que requieren alta creatividad en las horas de mayor energía biológica.</li>
+                        </ul>
+                        
+                        <h2>Conclusión</h2>
+                        <p>La clave no es trabajar más horas, sino trabajar con mayor intención. Al priorizar lo que genera mayor beneficio con menor esfuerzo, transformamos el caos del hogar en un entorno de alto rendimiento.</p>
+                    </div>
+                `
+            },
+            {
+                id: 2,
+                title: "Optimización de Procesos Técnicos y Escalabilidad",
+                excerpt: "La implementación de tecnología no debe ser un evento traumático. Analizamos cómo documentar y escalar cambios técnicos.",
+                readTime: "4 min lectura",
+                content: `
+                    <h1>Optimización de Procesos Técnicos y Escalabilidad</h1>
+                    <span class="article-meta">Categoría: Desarrollo & Operaciones</span>
+                    <div class="article-body">
+                        <p>En el mundo del desarrollo web y la ingeniería de software, la optimización no es un destino, es un camino continuo. La experiencia de profesionales en el área respalda la implementación gradual y acompañada de capacitación constante para evitar la fricción operativa.</p>
+                        
+                        <h2>Documentación y Medición</h2>
+                        <p>En la práctica, se recomienda documentar cada cambio y medir su impacto en indicadores clave (KPIs). No se puede mejorar lo que no se mide. Un cambio en el código o en la infraestructura debe tener un "antes" y un "después" cuantificable, ya sea en milisegundos de carga o en porcentaje de conversión.</p>
+                        
+                        <h2>El Reto de la Escalabilidad</h2>
+                        <p>Finalmente, es importante considerar la escalabilidad de la solución y su compatibilidad con procesos existentes. Una solución que funciona para 100 usuarios puede colapsar con 10,000 si no se ha diseñado pensando en la arquitectura modular. Este enfoque contempla tanto aspectos operativos como de hardware.</p>
+                        
+                        <p>Para entender mejor el fenómeno, es útil analizar ejemplos reales y extraer patrones reproducibles. La optimización prematura es la raíz de todos los males, pero la falta de planificación de escalabilidad es la causa de la muerte del éxito.</p>
+                    </div>
+                `
+            },
+            {
+                id: 3,
+                title: "Gestión del Cambio: El Factor Humano en la Tecnología",
+                excerpt: "La tecnología más avanzada falla si el equipo no la adopta. Estrategias para una transición digital sin fricciones.",
+                readTime: "6 min lectura",
+                content: `
+                    <h1>Gestión del Cambio: El Factor Humano</h1>
+                    <span class="article-meta">Categoría: Liderazgo & Tech</span>
+                    <div class="article-body">
+                        <p>Una observación relevante en la industria es que los fallos en la implementación de software se presentan con frecuencia cuando se combinan factores técnicos y humanos de forma desalineada. Por lo tanto, la intervención debe ser multidimensional.</p>
+                        
+                        <h2>Resistencia al cambio</h2>
+                        <p>La resistencia es natural. Cuando se introduce una nueva interfaz o un nuevo lenguaje de programación en un equipo establecido, la curva de aprendizaje genera frustración inicial. La gestión del cambio no trata de forzar la herramienta, sino de vender el beneficio.</p>
+                        
+                        <h2>Estrategias de Adopción</h2>
+                        <ul>
+                            <li><strong>Capacitación Gradual:</strong> No lanzar todo el sistema de golpe. Módulos pequeños generan victorias rápidas.</li>
+                            <li><strong>Feedback Continuo:</strong> Facilitar canales donde los usuarios reporten errores sin miedo a represalias.</li>
+                            <li><strong>Embajadores Internos:</strong> Identificar a los usuarios avanzados que ayudarán a sus compañeros.</li>
+                        </ul>
+                        
+                        <p>Este enfoque facilita la retroalimentación continua y asegura que la tecnología sirva a las personas, y no al revés.</p>
+                    </div>
+                `
+            },
+            {
+                id: 4,
+                title: "Comunicación Clara: Alineando Expectativas",
+                excerpt: "Cómo traducir la complejidad técnica en un lenguaje que los stakeholders y usuarios finales comprendan y valoren.",
+                readTime: "4 min lectura",
+                content: `
+                    <h1>Comunicación Clara y Expectativas</h1>
+                    <span class="article-meta">Categoría: Soft Skills</span>
+                    <div class="article-body">
+                        <p>La comunicación clara con los usuarios finales ayuda a alinear expectativas y reducir fricciones durante la adopción de nuevos productos digitales. En Ink and Key, creemos que el código es poesía, pero la documentación es la prosa que lo hace accesible.</p>
+                        
+                        <h2>Del Tecnicismo al Beneficio</h2>
+                        <p>Un error común es explicar las características técnicas ("hemos migrado a una base de datos NoSQL") en lugar de los beneficios tangibles ("las búsquedas ahora son 0.5 segundos más rápidas"). </p>
+                        
+                        <h2>Transparencia en el Proceso</h2>
+                        <p>En la práctica, documentar cada cambio y comunicarlo proactivamente genera confianza. Si hay un tiempo de inactividad programado, avisar con antelación y explicar el "por qué" transforma una molestia en una señal de profesionalismo. La experiencia respalda que una implementación acompañada de comunicación empática reduce los tickets de soporte en un 40%.</p>
+                    </div>
+                `
+            },
+            {
+                id: 5,
+                title: "Análisis de Patrones en Fenómenos Digitales",
+                excerpt: "La capacidad de reconocer patrones repetibles separa a los programadores novatos de los arquitectos de sistemas.",
+                readTime: "5 min lectura",
+                content: `
+                    <h1>Análisis de Patrones Reproducibles</h1>
+                    <span class="article-meta">Categoría: Ingeniería de Software</span>
+                    <div class="article-body">
+                        <p>Para entender mejor el fenómeno del éxito en productos digitales, es útil analizar ejemplos reales y extraer patrones reproducibles. No se trata de copiar, sino de entender la sintaxis del éxito.</p>
+                        
+                        <h2>Patrones de Diseño (Design Patterns)</h2>
+                        <p>Desde el patrón Singleton hasta el Observer, la ingeniería de software ha resuelto problemas comunes hace décadas. Reutilizar estas estructuras mentales ahorra tiempo y reduce la deuda técnica. </p>
+                        
+                        <h2>Patrones de Comportamiento de Usuario</h2>
+                        <p>Del mismo modo, en UX/UI, existen patrones de navegación que los usuarios ya tienen interiorizados (como el menú hamburguesa en móviles o el gesto de "pull-to-refresh"). Romper estos patrones sin una razón de peso suele resultar en una caída de la retención.</p>
+                        
+                        <p>La clave consiste en identificar qué partes de tu sistema deben ser innovadoras y únicas, y qué partes deben seguir los estándares de la industria para garantizar estabilidad y familiaridad.</p>
+                    </div>
+                `
+            },
+            {
+                id: 6,
+                title: "Priorización Estratégica: Recursos Limitados",
+                excerpt: "La regla del 80/20 aplicada al desarrollo. Cómo decidir qué construir primero cuando todo parece urgente.",
+                readTime: "3 min lectura",
+                content: `
+                    <h1>Priorización Estratégica</h1>
+                    <span class="article-meta">Categoría: Gestión de Producto</span>
+                    <div class="article-body">
+                        <p>En entornos con recursos limitados —que son prácticamente todos—, la priorización no es un lujo, es una supervivencia. La clave consiste en priorizar lo que genera mayor beneficio con menor esfuerzo.</p>
+                        
+                        <h2>La Matriz de Esfuerzo vs. Impacto</h2>
+                        <p>Visualizar las tareas en un cuadrante ayuda a tomar decisiones frías:</p>
+                        <ul>
+                            <li><strong>Alto Impacto / Bajo Esfuerzo:</strong> Hazlo ahora mismo (Quick Wins).</li>
+                            <li><strong>Alto Impacto / Alto Esfuerzo:</strong> Planifícalo como proyecto mayor.</li>
+                            <li><strong>Bajo Impacto / Bajo Esfuerzo:</strong> Tareas de relleno (Fillers).</li>
+                            <li><strong>Bajo Impacto / Alto Esfuerzo:</strong> Deséchalo o delégalo.</li>
+                        </ul>
+                        
+                        <p>Esta regla útil permite a los equipos de desarrollo mantenerse enfocados en entregar valor continuo al cliente, en lugar de perderse en la optimización de funcionalidades que nadie utiliza.</p>
+                    </div>
+                `
+            }
+        ];
+
+        // --- 2. LÓGICA SPA (NAVEGACIÓN) ---
+        function navigate(viewId, articleId = null) {
+            // Ocultar todas las vistas
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('nav a').forEach(el => el.classList.remove('active'));
+
+            // Scroll arriba suave
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Mostrar vista seleccionada
+            if (viewId === 'home') {
+                document.getElementById('home-view').classList.add('active');
+                document.getElementById('link-home').classList.add('active');
+            } else if (viewId === 'blog') {
+                document.getElementById('blog-view').classList.add('active');
+                document.getElementById('link-blog').classList.add('active');
+                renderBlogList();
+            } else if (viewId === 'article') {
+                document.getElementById('article-view').classList.add('active');
+                renderArticleContent(articleId);
+            }
+        }
+
+        // --- 3. FUNCIONES DEL MODAL (LOGO EXPANDIBLE) ---
+        function openModal() {
+            document.getElementById('logo-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('logo-modal').style.display = 'none';
+        }
+
+        // --- 4. RENDERIZADO DEL BLOG ---
+        function renderBlogList() {
+            const container = document.getElementById('articles-grid');
+            container.innerHTML = ''; // Limpiar
+            
+            articlesData.forEach(art => {
+                const card = document.createElement('div');
+                card.className = 'article-card';
+                card.onclick = () => navigate('article', art.id);
+                
+                card.innerHTML = `
+                    <div>
+                        <h3>${art.title}</h3>
+                        <p>${art.excerpt}</p>
+                    </div>
+                    <div class="read-more">Leer Artículo →</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderArticleContent(id) {
+            const article = articlesData.find(a => a.id === id);
+            const contentWrapper = document.getElementById('article-content-wrapper');
+            
+            if (article) {
+                // Inyectamos el HTML completo definido en la data
+                contentWrapper.innerHTML = article.content;
+            }
+        }
+
+        // --- 5. ANIMACIÓN DE FONDO (PARTÍCULAS) ---
+        const starField = document.getElementById('star-field');
+        const starCount = 60; 
+        
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3 + 'px';
+            
+            star.style.width = size;
+            star.style.height = size;
+            star.style.left = Math.random() * 100 + '%';
+            
+            star.style.setProperty('--duration', Math.random() * 15 + 10 + 's'); 
+            star.style.animationDelay = Math.random() * 5 + 's';
+            star.style.top = Math.random() * 100 + '%';
+            
+            starField.appendChild(star);
+        }
+
+        // Inicializar
+        renderBlogList();
+    </script>
+</body>
+</html>
